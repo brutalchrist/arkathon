@@ -48,6 +48,43 @@ class Bloque(object):
     def getY(self):
         return int(self.y)
 
+    def getPos(self):
+        return int(self.x), int(self.y)
+
+class Boton(object):
+    def __init__(self, sprite=None):
+        self.upPush = False
+        self.downPush = False
+        self.sprite = sprite
+
+    @property
+    def upPush(self):
+        return self.__upPush
+
+    @upPush.setter
+    def upPush(self, upPush):
+        self.__upPush = upPush
+
+    @property
+    def downPush(self):
+        return self.__downPush
+
+    @downPush.setter
+    def downPush(self, downPush):
+        self.__downPush = downPush
+
+    @property
+    def sprite(self):
+        return self.__sprite
+
+    @sprite.setter
+    def sprite(self, sprite):
+        self.__sprite = sprite
+
+    def restablecerEstados(self):
+        self.upPush = False
+        self.downPush = False
+
 
 class ArkathonMaker(object):
     def __init__(self):
@@ -68,16 +105,21 @@ class ArkathonMaker(object):
         # Botones y sus posiciones
         self.up = pygame.image.load(BUTTON_UP_PATH)
         self.down = pygame.image.load(BUTTON_DOWN_PATH)
-        self.mas = pygame.image.load(BUTTON_MAS_PATH)
+        #self.mas = pygame.image.load(BUTTON_MAS_PATH)
+        self.mas = Boton(pygame.image.load(BUTTON_MAS_PATH))
 
         self.screen.blit(self.up, self.up.get_rect(center=(BUTTON_UP_POS)))
         self.screen.blit(self.down, self.down.get_rect(center=(BUTTON_DOWN_POS)))
-        self.screen.blit(self.mas, self.mas.get_rect(center=(BUTTON_MAS_POS)))
+        self.screen.blit(self.mas.sprite, self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)))
+
+        self.contadorListaBloques = 0
 
         self.listaBloques = []
         self.elBloque = Bloque()
-        self.elBloque.setBloque(pygame.image.load(BLOCK_BLUE_PATH))
+        self.elBloque.setBloque(pygame.image.load(LIST_BLOCKS[self.contadorListaBloques]))
         self.listaBloques.append(self.elBloque)
+
+        self.bloqueSeleccionado = False
 
         self.fondo = pygame.image.load(BACKGROUND_PATH)
         self.fondorect = self.fondo.get_rect()
@@ -91,8 +133,6 @@ class ArkathonMaker(object):
         # Da valores iniciales a los contadores
         bgsound = 0
 
-        presionado = [False, False]
-
         while 1:
             self.clock.tick(160)
             for event in pygame.event.get():
@@ -105,22 +145,37 @@ class ArkathonMaker(object):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Si se presiona el boton agregar
-                if self.mas.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
-                    presionado[0] = True
+                if self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
+                    self.mas.downPush = True
+                    #presionado[0] = True
+
+                if event.button == LEFT_CLICK:
+                    if self.elBloque.bloque.get_rect(center=(self.elBloque.getPos())).collidepoint(x, y):
+                        self.bloqueSeleccionado = True
+
+                if event.button == RIGHT_CLICK:
+                    if self.bloqueSeleccionado:
+                        self.bloqueSeleccionado = False
+
 
             if event.type == pygame.MOUSEBUTTONUP:
                 # Si se suelta el boton agregar
-                if self.mas.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
-                    if presionado[0] == True:
-                        presionado[0] = False
-                        presionado[1] = True
+                if self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
+                    if self.mas.downPush == True:
+                        self.mas.downPush = False
+                        self.mas.upPush = True
 
             # Solo una llamada al metodo nuevo bloque
-            if presionado[1] == True:
+            if self.mas.upPush == True:
+                self.mas.restablecerEstados()
                 self.nuevoBloques()
-                presionado = [False, False]
+
+            if self.bloqueSeleccionado:
+                self.elBloque.setX(x)
+                self.elBloque.setY(y)
 
             # dibuja el fondo
+            self.screen.fill((0, 0, 0))
             self.screen.blit(self.fondo, self.fondorect)
 
             # dibuja los bloques
@@ -130,8 +185,6 @@ class ArkathonMaker(object):
             self.mouseOver(x, y)
 
             self.displayFonts(x, y)
-
-            # pone letras en pantalla
 
 
             pygame.display.flip()
@@ -151,9 +204,9 @@ class ArkathonMaker(object):
     def mouseOver(self, x, y):
         """Genera una especie de mouse over.
 
-        Parametros:
-        x -- posicion x del mouse
-        y -- posicion y del mouse
+        :parameter:
+            - x: Posicion x del mouse
+            - y: Posicion y del mouse
 
         """
         if self.up.get_rect(center=(BUTTON_UP_POS)).collidepoint(x, y):
@@ -170,18 +223,38 @@ class ArkathonMaker(object):
             self.down = pygame.image.load(BUTTON_DOWN_PATH)
             self.screen.blit(self.down, self.down.get_rect(center=(BUTTON_DOWN_POS)))
 
-        if self.mas.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
-            self.mas = pygame.image.load(BUTTON_MAS_RED_PATH)
-            self.screen.blit(self.mas, self.mas.get_rect(center=(BUTTON_MAS_POS)))
+        if self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
+            self.mas.sprite = pygame.image.load(BUTTON_MAS_RED_PATH)
+            self.screen.blit(self.mas.sprite, self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)))
         else:
-            self.mas = pygame.image.load(BUTTON_MAS_PATH)
-            self.screen.blit(self.mas, self.mas.get_rect(center=(BUTTON_MAS_POS)))
+            self.mas.sprite = pygame.image.load(BUTTON_MAS_PATH)
+            self.screen.blit(self.mas.sprite, self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)))
 
 
     def nuevoBloques(self):
         #TODO: a~adir
+        self.elBloque = Bloque()
+        siguienteBloque = self.siguienteBloque()
+        #print siguienteBloque
+        #print self.contadorListaBloques
+        self.elBloque.setBloque(pygame.image.load(siguienteBloque))
+        self.listaBloques.append(self.elBloque)
 
-        print("Nuevo bloque")
+    def siguienteBloque(self):
+        if self.contadorListaBloques == len(LIST_BLOCKS) - 1:
+            self.contadorListaBloques = 0
+        else:
+            self.contadorListaBloques += 1
+
+        return LIST_BLOCKS[self.contadorListaBloques]
+
+    def anteriorBloque(self):
+        if self.contadorListaBloques == 0:
+            self.contadorListaBloques = len(LIST_BLOCKS)
+        else:
+            self.contadorListaBloques -= 1
+
+        return LIST_BLOCKS[self.contadorListaBloques]
 
 
 if __name__ == '__main__':

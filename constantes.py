@@ -28,7 +28,14 @@ BLOCK_CALYPSO_PATH = "data/sprite/block03.png"
 BLOCK_RED_PATH = "data/sprite/block04.png"
 BLOCK_GREY_PATH = "data/sprite/block05.png"
 
-"""Constantes para el Maker
+LIST_BLOCKS = [BLOCK_BLUE_PATH, BLOCK_YELLOW_PATH, BLOCK_CALYPSO_PATH, BLOCK_RED_PATH, BLOCK_GREY_PATH]
+
+LEFT_CLICK = 1
+MIDDLE_CLICK = 2
+RIGHT_CLICK = 3
+
+"""
+Constantes para el Maker
 """
 'Botones'
 BUTTON_UP_PATH = "data/sprite/up.png"
