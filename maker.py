@@ -17,79 +17,20 @@
 # Si lo usas, por favor, reconoce nuestro trabajo
 
 # -*- coding: utf-8 -*-
-from lxml.html.builder import FONT
 
-import sys, pygame, os
-from twisted.internet.tcp import _AbortingMixin
-from constantes import *
+import pygame
+from sys import exit
+from os import environ
 
-
-class Bloque(object):
-    def __init__(self):
-        self.bloque = None
-        self.x = 490
-        self.y = 200
-
-    def setBloque(self, bloque):
-        self.bloque = bloque
-
-    def getBloque(self):
-        return self.bloque
-
-    def setX(self, x):
-        self.x = x
-
-    def getX(self):
-        return int(self.x)
-
-    def setY(self, y):
-        self.y = y
-
-    def getY(self):
-        return int(self.y)
-
-    def getPos(self):
-        return int(self.x), int(self.y)
-
-class Boton(object):
-    def __init__(self, sprite=None):
-        self.upPush = False
-        self.downPush = False
-        self.sprite = sprite
-
-    @property
-    def upPush(self):
-        return self.__upPush
-
-    @upPush.setter
-    def upPush(self, upPush):
-        self.__upPush = upPush
-
-    @property
-    def downPush(self):
-        return self.__downPush
-
-    @downPush.setter
-    def downPush(self, downPush):
-        self.__downPush = downPush
-
-    @property
-    def sprite(self):
-        return self.__sprite
-
-    @sprite.setter
-    def sprite(self, sprite):
-        self.__sprite = sprite
-
-    def restablecerEstados(self):
-        self.upPush = False
-        self.downPush = False
+from classes.Constantes import *
+from classes.Boton import Boton
+from classes.Bloque import Bloque
 
 
 class ArkathonMaker(object):
     def __init__(self):
         # permite centrar la ventana a la pantalla usando SDL
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
         # Inicializa el mixer
         pygame.mixer.pre_init(44100, -16, 2, 5000)
@@ -137,7 +78,7 @@ class ArkathonMaker(object):
             self.clock.tick(160)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    sys.exit()
+                    exit()
 
             x, y = pygame.mouse.get_pos()
 
