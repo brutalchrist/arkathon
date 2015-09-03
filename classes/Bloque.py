@@ -18,11 +18,18 @@
 
 # -*- coding: utf-8 -*-
 
+from pygame import image
+from Constantes import DE_DOSPUNTOS
+
 class Bloque(object):
+    #TODO: Cambiar los getters and setter a la PythonWay.
     def __init__(self):
         self.bloque = None
+        self.rect = None
         self.x = 490
         self.y = 200
+
+        self.temp = None
 
     def setBloque(self, bloque):
         self.bloque = bloque
@@ -42,5 +49,24 @@ class Bloque(object):
     def getY(self):
         return int(self.y)
 
+    @property
+    def rect(self):
+        self.rect = self.bloque.get_rect(center=(self.x, self.y))
+        return self.__rect
+
+    @rect.setter
+    def rect(self, rect):
+        self.__rect = rect
+
     def getPos(self):
         return int(self.x), int(self.y)
+
+    def cambiarADE(self):
+        if self.temp == None:
+            self.temp = self.bloque.copy()
+            self.bloque = image.load(DE_DOSPUNTOS)
+
+    def volverBloque(self):
+        if self.temp != None:
+            self.bloque = self.temp
+            self.temp = None

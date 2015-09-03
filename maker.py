@@ -44,13 +44,12 @@ class ArkathonMaker(object):
         pygame.display.set_caption("Arkathon Maker")
 
         # Botones y sus posiciones
-        self.up = pygame.image.load(BUTTON_UP_PATH)
-        self.down = pygame.image.load(BUTTON_DOWN_PATH)
-        #self.mas = pygame.image.load(BUTTON_MAS_PATH)
+        self.up = Boton(pygame.image.load(BUTTON_UP_PATH))
+        self.down = Boton(pygame.image.load(BUTTON_DOWN_PATH))
         self.mas = Boton(pygame.image.load(BUTTON_MAS_PATH))
 
-        self.screen.blit(self.up, self.up.get_rect(center=(BUTTON_UP_POS)))
-        self.screen.blit(self.down, self.down.get_rect(center=(BUTTON_DOWN_POS)))
+        self.screen.blit(self.up.sprite, self.up.sprite.get_rect(center=(BUTTON_UP_POS)))
+        self.screen.blit(self.down.sprite, self.down.sprite.get_rect(center=(BUTTON_DOWN_POS)))
         self.screen.blit(self.mas.sprite, self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)))
 
         self.contadorListaBloques = 0
@@ -61,6 +60,7 @@ class ArkathonMaker(object):
         self.listaBloques.append(self.elBloque)
 
         self.bloqueSeleccionado = False
+        self.bloquesColicionados = False
 
         self.fondo = pygame.image.load(BACKGROUND_PATH)
         self.fondorect = self.fondo.get_rect()
@@ -74,7 +74,7 @@ class ArkathonMaker(object):
         # Da valores iniciales a los contadores
         bgsound = 0
 
-        while 1:
+        while True:
             self.clock.tick(160)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -82,22 +82,18 @@ class ArkathonMaker(object):
 
             x, y = pygame.mouse.get_pos()
 
-
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Si se presiona el boton agregar
                 if self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
                     self.mas.downPush = True
-                    #presionado[0] = True
-
-                if event.button == LEFT_CLICK:
-                    if self.elBloque.bloque.get_rect(center=(self.elBloque.getPos())).collidepoint(x, y):
-                        self.bloqueSeleccionado = True
+                elif self.up.sprite.get_rect(center=(BUTTON_UP_POS)).collidepoint(x, y):
+                    self.up.downPush = True
+                elif self.down.sprite.get_rect(center=(BUTTON_DOWN_POS)).collidepoint(x, y):
+                    self.down.downPush = True
 
                 if event.button == RIGHT_CLICK:
-                    if self.bloqueSeleccionado:
-                        self.bloqueSeleccionado = False
-
+                        if self.bloqueSeleccionado and  not self.bloquesColicionados:
+                            self.bloqueSeleccionado = False
 
             if event.type == pygame.MOUSEBUTTONUP:
                 # Si se suelta el boton agregar
@@ -105,11 +101,25 @@ class ArkathonMaker(object):
                     if self.mas.downPush == True:
                         self.mas.downPush = False
                         self.mas.upPush = True
+                elif self.up.sprite.get_rect(center=(BUTTON_UP_POS)).collidepoint(x, y):
+                    if self.up.downPush == True:
+                        self.up.downPush = False
+                        self.up.upPush = True
+                elif self.down.sprite.get_rect(center=(BUTTON_DOWN_POS)).collidepoint(x, y):
+                    if self.down.downPush == True:
+                        self.down.downPush = False
+                        self.down.upPush = True
 
             # Solo una llamada al metodo nuevo bloque
             if self.mas.upPush == True:
                 self.mas.restablecerEstados()
-                self.nuevoBloques()
+                self.nuevoBloque()
+            elif self.up.upPush == True:
+                self.up.restablecerEstados()
+                self.elBloque.setBloque(pygame.image.load(self.anteriorBloque()))
+            elif self.down.upPush == True:
+                self.down.restablecerEstados()
+                self.elBloque.setBloque(pygame.image.load(self.siguienteBloque()))
 
             if self.bloqueSeleccionado:
                 self.elBloque.setX(x)
@@ -119,8 +129,23 @@ class ArkathonMaker(object):
             self.screen.fill((0, 0, 0))
             self.screen.blit(self.fondo, self.fondorect)
 
-            # dibuja los bloques
+            # tratamiento de bloques
             for b in self.listaBloques:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == LEFT_CLICK:
+                        if b.rect.collidepoint(x, y):
+                            self.focoBloque(b)
+                            self.bloqueSeleccionado = True
+
+
+                if self.elBloque.rect.colliderect(b.rect):
+                    if self.elBloque != b:
+                        self.elBloque.cambiarADE()
+                        self.bloquesColicionados = True
+                else:
+                    self.elBloque.volverBloque()
+                    self.bloquesColicionados = False
+
                 self.screen.blit(b.getBloque(), b.getBloque().get_rect(center=(b.getX(), b.getY())))
 
             self.mouseOver(x, y)
@@ -150,19 +175,19 @@ class ArkathonMaker(object):
             - y: Posicion y del mouse
 
         """
-        if self.up.get_rect(center=(BUTTON_UP_POS)).collidepoint(x, y):
-            self.up = pygame.image.load(BUTTON_UP_RED_PATH)
-            self.screen.blit(self.up, self.up.get_rect(center=(BUTTON_UP_POS)))
+        if self.up.sprite.get_rect(center=(BUTTON_UP_POS)).collidepoint(x, y):
+            self.up.sprite = pygame.image.load(BUTTON_UP_RED_PATH)
+            self.screen.blit(self.up.sprite, self.up.sprite.get_rect(center=(BUTTON_UP_POS)))
         else:
-            self.up = pygame.image.load(BUTTON_UP_PATH)
-            self.screen.blit(self.up, self.up.get_rect(center=(BUTTON_UP_POS)))
+            self.up.sprite = pygame.image.load(BUTTON_UP_PATH)
+            self.screen.blit(self.up.sprite, self.up.sprite.get_rect(center=(BUTTON_UP_POS)))
 
-        if self.down.get_rect(center=(BUTTON_DOWN_POS)).collidepoint(x, y):
-            self.down = pygame.image.load(BUTTON_DOWN_RED_PATH)
-            self.screen.blit(self.down, self.down.get_rect(center=(BUTTON_DOWN_POS)))
+        if self.down.sprite.get_rect(center=(BUTTON_DOWN_POS)).collidepoint(x, y):
+            self.down.sprite = pygame.image.load(BUTTON_DOWN_RED_PATH)
+            self.screen.blit(self.down.sprite, self.down.sprite.get_rect(center=(BUTTON_DOWN_POS)))
         else:
-            self.down = pygame.image.load(BUTTON_DOWN_PATH)
-            self.screen.blit(self.down, self.down.get_rect(center=(BUTTON_DOWN_POS)))
+            self.down.sprite = pygame.image.load(BUTTON_DOWN_PATH)
+            self.screen.blit(self.down.sprite, self.down.sprite.get_rect(center=(BUTTON_DOWN_POS)))
 
         if self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)).collidepoint(x, y):
             self.mas.sprite = pygame.image.load(BUTTON_MAS_RED_PATH)
@@ -172,13 +197,9 @@ class ArkathonMaker(object):
             self.screen.blit(self.mas.sprite, self.mas.sprite.get_rect(center=(BUTTON_MAS_POS)))
 
 
-    def nuevoBloques(self):
-        #TODO: a~adir
+    def nuevoBloque(self):
         self.elBloque = Bloque()
-        siguienteBloque = self.siguienteBloque()
-        #print siguienteBloque
-        #print self.contadorListaBloques
-        self.elBloque.setBloque(pygame.image.load(siguienteBloque))
+        self.elBloque.setBloque(pygame.image.load(self.siguienteBloque()))
         self.listaBloques.append(self.elBloque)
 
     def siguienteBloque(self):
@@ -191,11 +212,14 @@ class ArkathonMaker(object):
 
     def anteriorBloque(self):
         if self.contadorListaBloques == 0:
-            self.contadorListaBloques = len(LIST_BLOCKS)
+            self.contadorListaBloques = len(LIST_BLOCKS) - 1
         else:
             self.contadorListaBloques -= 1
 
         return LIST_BLOCKS[self.contadorListaBloques]
+
+    def focoBloque(self, bloque):
+        self.elBloque = bloque
 
 
 if __name__ == '__main__':

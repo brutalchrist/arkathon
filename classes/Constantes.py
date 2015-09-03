@@ -45,6 +45,8 @@ BUTTON_DOWN_RED_PATH = "data/sprite/down_red.png"
 BUTTON_MAS_PATH = "data/sprite/mas.png"
 BUTTON_MAS_RED_PATH = "data/sprite/mas_red.png"
 
+DE_DOSPUNTOS = "data/sprite/dedospuntos.png"
+
 'Posiciones'
 BUTTON_UP_POS = 490, 150
 BUTTON_DOWN_POS = 490, 250
