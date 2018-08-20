@@ -1,4 +1,4 @@
-![Arkathon](https://raw.githubusercontent.com/brutalchrist/arkathon/5b097b383a49314b58dad5300da06341466257ba/Arkathon.png)
+![Arkathon](https://raw.githubusercontent.com/brutalchrist/arkathon/945281044c6fb2cca77043d1176eb59c79308e0e/Arkathon.png)
 
 Clon del mítico juego desarrollado por Taito en el año 1986, Arkanoid.
 
@@ -22,4 +22,7 @@ $ cd arkathon
 $ python arkathon.py
 ```
 
-![Arkathon menu](https://raw.githubusercontent.com/brutalchrist/arkathon/5b097b383a49314b58dad5300da06341466257ba/Arkathon_menu.png)
+# Screenshots
+
+| ![Arkathon menu](https://raw.githubusercontent.com/brutalchrist/arkathon/945281044c6fb2cca77043d1176eb59c79308e0e/Arkathon_menu.png) | ![Arkathon options](https://raw.githubusercontent.com/brutalchrist/arkathon/945281044c6fb2cca77043d1176eb59c79308e0e/Arkathon_options.png) | ![Arkathon the game](https://raw.githubusercontent.com/brutalchrist/arkathon/945281044c6fb2cca77043d1176eb59c79308e0e/Arkathon_thegame.png) |
+| ![Arkathon new record](https://raw.githubusercontent.com/brutalchrist/arkathon/945281044c6fb2cca77043d1176eb59c79308e0e/Arkathon_newrecord.png) | ![Arkathon scores](https://raw.githubusercontent.com/brutalchrist/arkathon/945281044c6fb2cca77043d1176eb59c79308e0e/Arkathon_scores.png) | ![Arkathon gameover](https://raw.githubusercontent.com/brutalchrist/arkathon/945281044c6fb2cca77043d1176eb59c79308e0e/Arkathon_gameover.png) |
