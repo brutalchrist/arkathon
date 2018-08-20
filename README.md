@@ -4,6 +4,7 @@ Clon del mítico juego desarrollado por Taito en el año 1986, Arkanoid.
 
 ## Dependencies
 
+- [Python](https://www.python.org/downloads/)
 - [PyGame](https://www.pygame.org/news)
   ```bash
   $ pip install pygame
