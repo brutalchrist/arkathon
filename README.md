@@ -1,4 +1,4 @@
-![Arkathon](http://www.brutalchrist.info/blog/wp-content/uploads/2012/02/Arkathon_logo-300x69.png)
+![Arkathon](https://raw.githubusercontent.com/brutalchrist/arkathon/5b097b383a49314b58dad5300da06341466257ba/Arkathon.png)
 
 Clon del mítico juego desarrollado por Taito en el año 1986, Arkanoid.
 
@@ -22,4 +22,4 @@ $ cd arkathon
 $ python arkathon.py
 ```
 
-![Arkathon menu](http://www.brutalchrist.info/blog/wp-content/uploads/2012/02/Arkathon_principal-245x300.png)
+![Arkathon menu](https://raw.githubusercontent.com/brutalchrist/arkathon/5b097b383a49314b58dad5300da06341466257ba/Arkathon_menu.png)
