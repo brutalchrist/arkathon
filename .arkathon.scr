@@ -1,10 +1,10 @@
 [primero]
-score = a
-nombre = 
+score = !a
+nombre =    
 
 [segundo]
-score = a
-nombre = 
+score = !a
+nombre = joe
 
 [tercero]
 score = a
